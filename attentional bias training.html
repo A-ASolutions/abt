@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Positive Spotting Trainer — Designed & created by Meaningful Path Therapy</title>
+<style>
+  :root{
+    --bg:#0e111a; --panel:#151a25; --ink:#f5f7ff; --muted:#a9b0c2;
+    --accent:#7fd3ff; --ok:#72f0a6; --bad:#ff8f8f;
+    --card:#111827; --radius:18px; --shadow:0 10px 28px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; color:var(--ink);
+    background: radial-gradient(1200px 700px at 0% -10%, #1a2250 0%, #0e111a 60%);
+    font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial; line-height:1.55;
+  }
+  header, footer{max-width:980px; margin:0 auto; padding:14px 12px}
+  header .brand{font-weight:800; letter-spacing:.2px; font-size:clamp(18px,5vw,22px)}
+  header .credit, footer .credit{color:var(--muted); font-size:12px}
+  main{max-width:980px; margin:0 auto; padding:0 12px 90px}
+  .card{background:linear-gradient(180deg,#18203a,#141a2a); border:1px solid rgba(255,255,255,.08);
+        border-radius:var(--radius); box-shadow:var(--shadow); padding:14px}
+  h1{margin:.2rem 0 .7rem; font-size:clamp(20px,6vw,26px)}
+  h2{margin:.2rem 0 .6rem; font-size:clamp(18px,5vw,22px)}
+  p.small{color:var(--muted); font-size:13px; margin:.2rem 0 .7rem}
+  .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+  .stack{display:grid; gap:12px}
+  .pill{display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.12); color:#a9b0c2; font-size:12px}
+  select, input[type="number"]{background:#0c1220; color:var(--ink); border:1px solid rgba(255,255,255,.15); border-radius:12px; padding:8px 10px; font-size:15px}
+  button{-webkit-tap-highlight-color:transparent; border:0; background:linear-gradient(90deg,var(--accent),#b1e7ff); color:#081220; font-weight:800; padding:12px 16px; border-radius:14px; cursor:pointer; font-size:15px; box-shadow:0 6px 18px rgba(127,211,255,.35)}
+  button.secondary{background:linear-gradient(90deg,#26304f,#222a44); color:var(--ink); border:1px solid rgba(255,255,255,.12); box-shadow:none}
+  button.ghost{background:transparent; border:1px solid rgba(255,255,255,.15); color:var(--ink)}
+  button:disabled{opacity:.5; cursor:not-allowed}
+  .hud{display:flex; gap:8px; align-items:center; justify-content:space-between; flex-wrap:wrap; margin:.2rem 0 .6rem}
+  .bar{height:10px; background:#0c1220; border:1px solid rgba(255,255,255,.1); border-radius:999px; overflow:hidden; flex:1}
+  .bar>div{height:100%; background:linear-gradient(90deg,#7fd3ff,#a8ecff); width:0%}
+  .stat{display:flex; gap:6px; align-items:center; font-size:13px; color:#a9b0c2}
+  .stat b{color:var(--ink)}
+  .arena{display:grid; gap:10px; justify-items:center; margin-top:8px}
+  .grid{display:grid; gap:8px; width:100%}
+  .grid.two{grid-template-columns:repeat(2,1fr)}
+  .grid.three{grid-template-columns:repeat(3,1fr)}
+  .grid.four{grid-template-columns:repeat(4,1fr)}
+  .tile{background:#0c1220; border:1px solid rgba(255,255,255,.12); color:var(--ink); border-radius:14px; padding:14px; text-align:center; min-height:70px; display:grid; place-items:center; font-size:clamp(16px,5vw,20px); user-select:none; transition:transform .08s ease, border-color .2s ease}
+  .tile:active{transform:scale(.98)}
+  .tile.correct{border-color:rgba(114,240,166,.9); box-shadow:0 0 0 2px rgba(114,240,166,.35) inset}
+  .tile.wrong{border-color:rgba(255,143,143,.9); box-shadow:0 0 0 2px rgba(255,143,143,.3) inset}
+  .tile.locked{opacity:.6; pointer-events:none}
+  .instr{font-size:14px; color:#a9b0c2; text-align:center}
+  .emoji{font-size:clamp(28px,10vw,40px)}
+  .sentence{font-size:clamp(14px,4.6vw,18px); line-height:1.35}
+  .footerSpace{height:76px}
+  .nav{position:fixed; left:0; right:0; bottom:0; backdrop-filter:blur(8px); background:linear-gradient(180deg,rgba(10,15,30,0) 0%, rgba(10,15,30,.85) 40%, rgba(10,15,30,.95) 100%); border-top:1px solid rgba(255,255,255,.08); padding:10px; display:flex; gap:8px; justify-content:space-between; align-items:center}
+  .nav .left,.nav .right{display:flex; gap:8px}
+  footer{text-align:center}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">Positive Spotting Trainer</div>
+  <div class="credit">Designed &amp; created by <strong>Meaningful Path Therapy</strong> — © Abdullah Al-Shoaibi</div>
+</header>
+
+<main>
+  <!-- Setup -->
+  <section class="card" id="setup">
+    <h1>Train your brain to notice what’s good</h1>
+    <p class="small">You’ll see words, sentences, or simple images. Pick the most positive as fast and accurately as you can. You’ll get points, streaks, and a summary at the end.</p>
+    <div class="stack">
+      <div class="row">
+        <span class="pill">Content
+          <select id="modeSel">
+            <option value="mixed" selected>Mixed</option>
+            <option value="words">Words</option>
+            <option value="sentences">Sentences</option>
+            <option value="emoji">Images (emoji)</option>
+          </select>
+        </span>
+        <span class="pill">Game
+          <select id="gameSel">
+            <option value="pair" selected>Pair</option>
+            <option value="grid">Grid</option>
+            <option value="odd">Odd one out</option>
+            <option value="mixed">Mixed</option>
+          </select>
+        </span>
+        <span class="pill">Start level
+          <select id="levelSel">
+            <option value="1">1</option><option value="2" selected>2</option><option value="3">3</option>
+            <option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option>
+          </select>
+        </span>
+      </div>
+      <div class="row">
+        <span class="pill">Trials <input id="trialsInp" type="number" min="12" max="150" value="36" style="width:84px"></span>
+        <span class="pill">Sound
+          <select id="soundSel"><option value="on" selected>On</option><option value="off">Off</option></select>
+        </span>
+        <span class="pill">High contrast
+          <select id="hcSel"><option value="off" selected>Off</option><option value="on">On</option></select>
+        </span>
+      </div>
+      <div class="row">
+        <button id="startBtn">Start session</button>
+        <button id="howBtn" class="ghost">How it works</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Game -->
+  <section class="card" id="game" style="display:none">
+    <div class="hud">
+      <div class="stat">Trial <b id="tNum">1</b>/<b id="tTotal">—</b></div>
+      <div class="bar" aria-label="time"><div id="tBar"></div></div>
+      <div class="stat">Level <b id="lvl">1</b></div>
+      <div class="stat">Score <b id="score">0</b></div>
+      <div class="stat">Streak <b id="streak">0</b></div>
+      <div class="stat">Accuracy <b id="acc">100%</b></div>
+    </div>
+    <div class="instr" id="instr">Tap the most positive option.</div>
+    <div class="arena" id="arena"></div>
+    <div class="footerSpace"></div>
+  </section>
+
+  <!-- Summary -->
+  <section class="card" id="summary" style="display:none">
+    <h2>Session summary</h2>
+    <div class="stack">
+      <div class="row">
+        <div class="pill">Score: <b id="sScore">0</b></div>
+        <div class="pill">Accuracy: <b id="sAcc">0%</b></div>
+        <div class="pill">Avg reaction: <b id="sRT">0 ms</b></div>
+        <div class="pill">Best streak: <b id="sStreak">0</b></div>
+        <div class="pill">End level: <b id="sLevel">1</b></div>
+      </div>
+      <p class="small">Tip: short, frequent sessions (2–5 minutes) work best.</p>
+      <div class="row">
+        <button id="againBtn">Play again</button>
+        <button id="csvBtn" class="secondary">Export CSV</button>
+        <button id="homeBtn" class="ghost">Home</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Sticky nav -->
+<div class="nav" id="nav" role="navigation" aria-label="Controls">
+  <div class="left"><button id="pauseBtn" class="secondary" disabled>Pause</button><button id="resumeBtn" style="display:none">Resume</button></div>
+  <div class="right"><button id="skipBtn" class="ghost" disabled>Skip</button><button id="endBtn" class="secondary" disabled>End session</button></div>
+</div>
+
+<footer><div class="credit">Designed &amp; created by <strong>Meaningful Path Therapy</strong> — © Abdullah Al-Shoaibi</div></footer>
+
+<script>
+/* ===== Content ===== */
+const WORDS_POS_STRONG = ["joy","kind","capable","calm","progress","grateful","support","friendly","hope","steady","patient","resourceful","curious","brave","ready","caring","safe","light","relief","choice","able","learning","worthy","proud","fair","clear","rested","connected","free","encouraging","comfort","balanced","healing","resilient","creative","playful","peace","optimistic","confident"];
+const WORDS_POS_SUBTLE = ["okay","manageable","good enough","improving","learning curve","making do","holding steady","finding ways","room to grow","on track","contained","coping","supported","heard","noticed","valued"];
+const WORDS_NEG_STRONG = ["fail","useless","panic","stuck","worthless","angry","alone","guilty","hopeless","tired","ashamed","hurt","problem","worry","scared","broken","unsafe","heavy","dread","trapped","stupid","pointless","reject","unfair","drained","tense","anxious","critical","doomed","helpless"];
+const WORDS_NEG_SUBTLE = ["uncertain","concern","rough","difficult","behind","distracted","overbusy","doubt","slip","off day","hesitant","cloudy","mixed","noisy","flat"];
+const SENT_POS_STRONG = ["You can take one good step.","You handled tough things before.","There’s help within reach.","You’re allowed to learn as you go.","This feeling will move.","You can choose a kind voice.","Progress over perfection.","You matter to someone today.","Small acts still count.","You can ask for support.","You’re building strength by showing up.","You can breathe and go gently."];
+const SENT_POS_SUBTLE = ["This is workable for now.","You can do the next tiny bit.","You don’t have to rush.","Good-enough is still good.","You can review later and adjust."];
+const SENT_NEG_STRONG = ["You always mess it up.","No one will help you.","It will definitely go wrong.","You shouldn’t try.","It never changes.","You’re not good enough.","Everyone will judge you.","There’s no point.","You can’t handle this.","It’s too late for you."];
+const SENT_NEG_SUBTLE = ["This is probably not worth it.","It might be too much today.","Others would do this better.","You should already know how.","It’s not going to improve."];
+const EMOJI_POS = ["🌅","🌿","🙂","☀️","🧡","🌈","🍵","🎉","🌟","🕊️","💪","🥇","😌","🤝","✨","📈","🎶","🏖️","🍀","🧘","🌻","🍎","🏅","🫶","🐣"];
+const EMOJI_NEG = ["🌩️","🌪️","😠","💣","🪦","🕳️","😖","💤","🥀","🚫","📉","⛈️","😞","🧨","💔","🫥","🌫️"];
+
+/* ===== Settings & state ===== */
+const $ = s=>document.querySelector(s);
+const arena = $("#arena"), tBar=$("#tBar"), nav=$("#nav");
+const settings = { mode:"mixed", game:"pair", trials:36, sound:true, highContrast:false, levelStart:2 };
+const state = {
+  trial:0,total:0,score:0,streak:0,bestStreak:0,
+  correct:0,wrong:0,rts:[],
+  paused:false, deadline:0, timerId:null,
+  awaiting:false, _advancing:false, _ended:false,
+  level:2, recent:[]
+};
+
+/* ===== Audio ===== */
+let AC=null, master=null;
+function ensureAudio(){ if(!settings.sound) return; if(!AC){ AC=new (window.AudioContext||window.webkitAudioContext)(); master=AC.createGain(); master.gain.value=0.16; master.connect(AC.destination);} if(AC.state==="suspended") AC.resume(); }
+function blipGood(){ if(!settings.sound) return; ensureAudio(); const t0=AC.currentTime; [[660,0.08],[880,0.09],[1320,0.12]].forEach(([f,d],i)=>{ const o=AC.createOscillator(), g=AC.createGain(); o.type="triangle"; o.frequency.value=f; g.gain.setValueAtTime(0.0001,t0+i*0.06); g.gain.exponentialRampToValueAtTime(0.16,t0+i*0.06+0.01); g.gain.exponentialRampToValueAtTime(0.0001,t0+i*0.06+d); o.connect(g); g.connect(master); o.start(t0+i*0.06); o.stop(t0+i*0.06+d+0.02); }); }
+function buzzBad(){ if(!settings.sound) return; ensureAudio(); const t0=AC.currentTime, o=AC.createOscillator(), g=AC.createGain(); o.type="sawtooth"; o.frequency.value=120; g.gain.setValueAtTime(0.12,t0); g.gain.exponentialRampToValueAtTime(0.0001,t0+0.25); o.connect(g); g.connect(master); o.start(t0); o.stop(t0+0.3); }
+
+/* ===== Helpers ===== */
+function setInstr(t){ $("#instr").textContent=t; }
+function setHUD(){ $("#tNum").textContent=state.trial; $("#tTotal").textContent=state.total; $("#score").textContent=state.score; $("#streak").textContent=state.streak; $("#lvl").textContent=state.level; const acc=state.correct+state.wrong===0?100:Math.round(100*state.correct/(state.correct+state.wrong)); $("#acc").textContent=acc+"%"; }
+function ms(){ return performance.now(); }
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function capitalise(w){ return w.slice(0,1).toUpperCase()+w.slice(1); }
+
+/* ===== Timer ===== */
+function startTimer(msTotal){
+  const start = ms(); state.deadline = start + msTotal; clearInterval(state.timerId); tBar.style.width="0%";
+  state.timerId = setInterval(()=>{
+    if(state.paused || state._ended) return;
+    const now = ms(), frac = Math.min(1, Math.max(0, (now-start)/msTotal));
+    tBar.style.width = (frac*100)+"%";
+    if(now >= state.deadline){
+      clearInterval(state.timerId);
+      if(state.awaiting){ markWrong(); state.awaiting=false; advanceSoon(); }
+    }
+  }, 50);
+}
+function stopTimer(){ clearInterval(state.timerId); }
+
+/* ===== Adaptive difficulty ===== */
+function levelParams(level){
+  const L = Math.max(1, Math.min(7, level));
+  return { timeFactor:[1.15,1.0,0.9,0.82,0.74,0.66,0.58][L-1], gridCols:[2,2,3,3,3,4,4][L-1], gridTargets:[2,2,3,3,4,4,5][L-1], subtle:L>=5 };
+}
+function updateLevel(){
+  const r = state.recent.slice(-8);
+  if(r.length<4) return;
+  const acc = r.filter(x=>x.ok).length / r.length;
+  const avg = r.reduce((a,b)=>a+b.rt,0)/r.length;
+  if(acc>=0.9 && avg<=1200) state.level = Math.min(7, state.level+1);
+  else if(acc<0.7 || avg>2500) state.level = Math.max(1, state.level-1);
+}
+
+/* ===== Trial builders ===== */
+let autoId=1;
+function makeItem(mode,isPos,subtle){
+  const id="it"+(autoId++); const el=document.createElement("button");
+  el.type="button"; el.className="tile"; el.dataset.id=id; el.setAttribute("aria-label", isPos?"positive option":"negative option");
+  if(mode==="words"){
+    const srcPos=subtle?WORDS_POS_SUBTLE:WORDS_POS_STRONG, srcNeg=subtle?WORDS_NEG_SUBTLE:WORDS_NEG_STRONG;
+    el.textContent = capitalise(isPos?pick(srcPos):pick(srcNeg));
+  } else if(mode==="sentences"){
+    const srcPos=subtle?SENT_POS_SUBTLE:SENT_POS_STRONG, srcNeg=subtle?SENT_NEG_SUBTLE:SENT_NEG_STRONG;
+    el.innerHTML = `<span class="sentence">${isPos?pick(srcPos):pick(srcNeg)}</span>`;
+  } else {
+    el.innerHTML = `<span class="emoji" role="img" aria-hidden="true">${isPos?pick(EMOJI_POS):pick(EMOJI_NEG)}</span>`;
+  }
+  el.addEventListener("click", ()=>handleClick(id,isPos,el));
+  return {id,el};
+}
+function buildPair(mode,params){
+  const wrap=document.createElement("div"); wrap.className="grid two";
+  const pos=makeItem(mode,true,params.subtle), neg=makeItem(mode,false,params.subtle);
+  shuffle([pos,neg]).forEach(x=>wrap.appendChild(x.el));
+  arena.innerHTML=""; arena.appendChild(wrap);
+  arena.dataset.mode="pair"; arena.dataset.correctId=pos.id;
+}
+function buildOdd(mode,params){
+  const wrap=document.createElement("div"); wrap.className=(params.gridCols>=3?"grid three":"grid two");
+  const total=params.gridCols>=3?9:6;
+  const pos=makeItem(mode,true,params.subtle);
+  const negs=Array.from({length:total-1},()=>makeItem(mode,false,params.subtle));
+  shuffle([pos,...negs]).forEach(x=>wrap.appendChild(x.el));
+  arena.innerHTML=""; arena.appendChild(wrap);
+  arena.dataset.mode="odd"; arena.dataset.correctId=pos.id;
+}
+function buildGrid(mode,params){
+  const wrap=document.createElement("div"); wrap.className=("grid "+(params.gridCols===4?"four":"three"));
+  const total=params.gridCols===4?12:9, target=params.gridTargets;
+  const ids=new Set();
+  for(let i=0;i<target;i++){ const it=makeItem(mode,true,params.subtle); ids.add(it.id); wrap.appendChild(it.el); }
+  for(let i=target;i<total;i++){ const it=makeItem(mode,false,params.subtle); wrap.appendChild(it.el); }
+  shuffle([...wrap.children]).forEach(ch=>wrap.appendChild(ch));
+  arena.innerHTML=""; arena.appendChild(wrap);
+  arena.dataset.mode="grid"; arena.dataset.correctIds=JSON.stringify([...ids]); arena.dataset.found="[]";
+}
+function hasAnyCorrect(){
+  const mode = arena.dataset.mode;
+  if(mode==="grid"){
+    const ids = JSON.parse(arena.dataset.correctIds||"[]");
+    return ids.length>0 && ids.some(id=> arena.querySelector(`.tile[data-id="${id}"]`));
+  } else {
+    const id = arena.dataset.correctId;
+    return !!id && !!arena.querySelector(`.tile[data-id="${id}"]`);
+  }
+}
+
+/* ===== Click handling ===== */
+function handleClick(id,isPos,el){
+  if(state.paused || !state.awaiting || state._ended) return;
+  const rt = ms() - state.startTs;
+  const mode = arena.dataset.mode;
+
+  if(mode==="grid"){
+    const correctIds=new Set(JSON.parse(arena.dataset.correctIds||"[]"));
+    const found=new Set(JSON.parse(arena.dataset.found||"[]"));
+    if(isPos){
+      el.classList.add("correct"); blipGood();
+      state.score += 100 + streakBonus(); state.correct++; state.streak++; state.bestStreak=Math.max(state.bestStreak,state.streak);
+      state.rts.push(rt); state.recent.push({ok:true,rt});
+      found.add(id); arena.dataset.found=JSON.stringify([...found]);
+      if(found.size===correctIds.size){
+        state.awaiting=false; stopTimer(); lockTiles(); advanceSoon();
+      }
+    } else {
+      if(el.classList.contains("wrong")) return;
+      el.classList.add("wrong"); buzzBad();
+      state.score = Math.max(0,state.score-60); state.wrong++; state.streak=0; state.recent.push({ok:false,rt}); shake(el);
+    }
+  } else {
+    const ok = (id === arena.dataset.correctId);
+    el.classList.add(ok?"correct":"wrong");
+    if(ok){
+      blipGood();
+      state.score += 120 + streakBonus(); state.correct++; state.streak++; state.bestStreak=Math.max(state.bestStreak,state.streak);
+      state.rts.push(rt); state.recent.push({ok:true,rt});
+      state.awaiting=false; stopTimer(); lockTiles(); advanceSoon();
+    } else {
+      buzzBad();
+      state.score = Math.max(0,state.score-70); state.wrong++; state.streak=0; state.recent.push({ok:false,rt}); shake(el);
+    }
+  }
+  setHUD();
+}
+function streakBonus(){ return Math.min(200, state.streak*10); }
+function lockTiles(){ arena.querySelectorAll(".tile").forEach(t=>t.classList.add("locked")); }
+function shake(el){ el.animate([{transform:"translateX(0)"},{transform:"translateX(-6px)"},{transform:"translateX(6px)"},{transform:"translateX(0)"}],{duration:180,iterations:1}); }
+function markWrong(){ buzzBad(); state.score=Math.max(0,state.score-50); state.wrong++; state.streak=0; state.recent.push({ok:false, rt:(ms()-state.startTs)}); lockTiles(); }
+
+/* ===== Session flow ===== */
+function startSession(){
+  // read settings
+  settings.mode=$("#modeSel").value; settings.game=$("#gameSel").value;
+  settings.trials=Math.max(12,Math.min(150,parseInt($("#trialsInp").value||"36",10)));
+  settings.sound=($("#soundSel").value==="on"); settings.highContrast=($("#hcSel").value==="on");
+  settings.levelStart=parseInt($("#levelSel").value||"2",10);
+  document.body.style.filter = settings.highContrast ? "contrast(1.15) saturate(1.05)" : "none";
+
+  // init state
+  Object.assign(state,{trial:0,total:settings.trials,score:0,streak:0,bestStreak:0,correct:0,wrong:0,rts:[],paused:false,awaiting:false,_advancing:false,_ended:false,level:settings.levelStart,recent:[]});
+  $("#tTotal").textContent=settings.trials; $("#lvl").textContent=state.level;
+
+  // UI
+  $("#setup").style.display="none"; $("#summary").style.display="none"; $("#game").style.display="block";
+  $("#pauseBtn").disabled=false; $("#skipBtn").disabled=false; $("#endBtn").disabled=false;
+  $("#resumeBtn").style.display="none"; $("#pauseBtn").style.display="inline-block";
+  nav.style.display="flex";
+
+  nextTrial();
+}
+function nextTrial(){
+  if(state._ended) return;
+  state.trial++; if(state.trial>state.total) return endSession();
+  setHUD(); updateLevel(); setHUD();
+  buildTrial();
+
+  // failsafe: ensure at least one correct
+  if(!hasAnyCorrect()){
+    state.awaiting=false; stopTimer(); return advanceSoon(50);
+  }
+  state.awaiting=true;
+  const baseMs=11000, params=levelParams(state.level);
+  startTimer(Math.round(baseMs*params.timeFactor));
+  state.startTs=ms();
+}
+function buildTrial(){
+  const params=levelParams(state.level);
+  const mode = settings.mode==="mixed" ? pick(["words","sentences","emoji"]) : settings.mode;
+  const game = settings.game==="mixed" ? pick(["pair","grid","odd"]) : settings.game;
+  if(game==="pair"){ buildPair(mode,params); setInstr("Tap the most positive option."); }
+  else if(game==="grid"){ buildGrid(mode,params); setInstr("Tap all the positive items."); }
+  else { buildOdd(mode,params); setInstr("Find the single positive item."); }
+}
+function advanceSoon(delay=350){
+  if(state._advancing || state._ended) return; state._advancing=true;
+  setTimeout(()=>{ state._advancing=false; nextTrial(); }, delay);
+}
+function endSession(){
+  if(state._ended) return;
+  state._ended=true; state.awaiting=false; stopTimer();
+  $("#game").style.display="none"; $("#summary").style.display="block";
+  nav.style.display="none"; // hide nav so it can't block summary buttons
+
+  $("#sScore").textContent=state.score;
+  const acc=(state.correct+state.wrong)?Math.round(100*state.correct/(state.correct+state.wrong)):100;
+  $("#sAcc").textContent=acc+"%";
+  const avg=state.rts.length?Math.round(state.rts.reduce((a,b)=>a+b,0)/state.rts.length):0;
+  $("#sRT").textContent=avg+" ms"; $("#sStreak").textContent=state.bestStreak; $("#sLevel").textContent=state.level;
+
+  saveHistory({date:new Date().toISOString(),score:state.score,acc,avgRT:avg,bestStreak:state.bestStreak,trials:state.total,mode:settings.mode,game:settings.game,levelEnd:state.level});
+
+  // disable nav buttons (if nav is shown again later)
+  $("#pauseBtn").disabled=true; $("#skipBtn").disabled=true; $("#endBtn").disabled=true; $("#resumeBtn").style.display="none";
+}
+
+/* Pause/Resume/Skip/End */
+$("#pauseBtn").addEventListener("click", ()=>{ state.paused=true; $("#pauseBtn").style.display="none"; $("#resumeBtn").style.display="inline-block"; });
+$("#resumeBtn").addEventListener("click", ()=>{ state.paused=false; $("#pauseBtn").style.display="inline-block"; $("#resumeBtn").style.display="none"; });
+$("#skipBtn").addEventListener("click", ()=>{ if(!state.paused && state.awaiting){ markWrong(); state.awaiting=false; advanceSoon(); }});
+$("#endBtn").addEventListener("click", endSession);
+
+/* Summary buttons — wired */
+$("#againBtn").addEventListener("click", ()=>{
+  // Restart immediately with current setup selections
+  startSession();
+});
+$("#homeBtn").addEventListener("click", ()=>{
+  // Go back to setup cleanly
+  stopTimer();
+  state._ended=true; state.awaiting=false;
+  $("#summary").style.display="none"; $("#game").style.display="none"; $("#setup").style.display="block";
+  nav.style.display="none";
+});
+/* CSV */
+const KEY="pst_history_v2_2";
+function getHistory(){ try{ return JSON.parse(localStorage.getItem(KEY)||"[]"); }catch(e){ return []; } }
+function saveHistory(obj){ const arr=getHistory(); arr.push(obj); localStorage.setItem(KEY, JSON.stringify(arr)); }
+$("#csvBtn").addEventListener("click", ()=>{
+  const rows=getHistory();
+  const header=["date","score","accuracy","avg_ms","best_streak","trials","mode","game","level_end"];
+  const csv=[header.join(",")].concat(rows.map(r=>[r.date,r.score,r.acc,r.avgRT,r.bestStreak,r.trials,r.mode,r.game,r.levelEnd].join(","))).join("\n");
+  const blob=new Blob([csv],{type:"text/csv"}); const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob); a.download="PositiveTrainer_history.csv"; a.click();
+});
+
+/* Onboarding & accessibility */
+$("#startBtn").addEventListener("click", ()=>{ if($("#soundSel").value==="on"){ ensureAudio(); } startSession(); });
+$("#howBtn").addEventListener("click", ()=>{ alert("You’re training attention to orient towards positives. Pick the positive options quickly and accurately. Difficulty adapts based on accuracy and reaction time. If a trial misloads with no correct answer, it will auto-skip."); });
+$("#soundSel").addEventListener("change", e=>{ settings.sound=(e.target.value==="on"); if(!settings.sound && AC){ AC.close(); AC=null; }});
+document.addEventListener("keydown", (e)=>{ if($("#game").style.display==="none") return; const n=parseInt(e.key,10); if(!isNaN(n)&&n>=1){ const tiles=[...arena.querySelectorAll(".tile")]; if(n-1<tiles.length) tiles[n-1].click(); }});
+</script>
+</body>
+</html>
